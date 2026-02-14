@@ -1,4 +1,3 @@
-@"
 # 🏛️ NFT Lending Evaluator Agent
 
 An AI-powered underwriting engine that evaluates any NFT as collateral and recommends a USDT loan amount with professional risk assessment.
@@ -36,6 +35,21 @@ An AI-powered underwriting engine that evaluates any NFT as collateral and recom
 
 ## 🔧 Installation
 
+```bash
+# Clone the repository
+git clone https://github.com/username/nft-lending-agent.git
+cd nft-lending-agent
 
+# Install dependencies
+npm install
 
+# Set up environment variables
+cp .env.example .env
+# Add your Moralis API key to .env
 
+# Start the local LLM (Ollama)
+ollama pull llama3.2:3b
+ollama run llama3.2:3b
+
+# Run the agent
+npm run dev
