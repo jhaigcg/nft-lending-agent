@@ -1,0 +1,44 @@
+﻿# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Model files (BIG files - DO NOT UPLOAD)
+*.gguf
+llama-3.2-3b-instruct-q4.gguf
+models/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# DO NOT ignore these important files!
+# !README.md
+# !package.json
+# !tsconfig.json
+# !src/
+# !src/**/*
+# !start-llm.bat
+# !debug.js
+# !.gitignore

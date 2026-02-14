@@ -1,0 +1,48 @@
+{
+  "name": "nft-lending-agent",
+  "version": "2.2.0",
+  "description": "NFT Lending Evaluator Agent with public Relay API",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist",
+    "watch": "nodemon --exec ts-node src/index.ts"
+  },
+  "keywords": [
+    "nft",
+    "lending",
+    "defi",
+    "relay",
+    "chainlink",
+    "twap",
+    "benddao",
+    "jpegd",
+    "blend"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@langchain/core": "^0.2.31",
+    "@langchain/langgraph": "^0.1.0",
+    "@langchain/openai": "^0.2.0",
+    "@moralisweb3/common-evm-utils": "^2.27.2",
+    "axios": "^1.13.5",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "ethers": "^5.7.2",
+    "express": "^5.2.1",
+    "moralis": "^2.27.2",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.2.3",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
