@@ -33,6 +33,12 @@ interface AgentState {
   report?: string;
 }
 
+// Reducer for optional string state: prefer new value if defined
+const optionalStringReducer = (
+  left: string | undefined,
+  right: string | undefined
+): string | undefined => (right !== undefined ? right : left);
+
 // Define state channels properly to persist data between nodes
 const workflow = new StateGraph<AgentState>({
   channels: {
@@ -40,31 +46,10 @@ const workflow = new StateGraph<AgentState>({
       value: (left: BaseMessage[] = [], right: BaseMessage[] = []) => [...left, ...right],
       default: () => [],
     },
-    nftData: {
-      value: (left: string | undefined, right: string | undefined) => {
-        // If right is defined, use it; otherwise keep left
-        return right !== undefined ? right : left;
-      },
-      default: () => undefined,
-    },
-    rarityScore: {
-      value: (left: string | undefined, right: string | undefined) => {
-        return right !== undefined ? right : left;
-      },
-      default: () => undefined,
-    },
-    loanEstimate: {
-      value: (left: string | undefined, right: string | undefined) => {
-        return right !== undefined ? right : left;
-      },
-      default: () => undefined,
-    },
-    report: {
-      value: (left: string | undefined, right: string | undefined) => {
-        return right !== undefined ? right : left;
-      },
-      default: () => undefined,
-    },
+    nftData: { value: optionalStringReducer, default: () => undefined },
+    rarityScore: { value: optionalStringReducer, default: () => undefined },
+    loanEstimate: { value: optionalStringReducer, default: () => undefined },
+    report: { value: optionalStringReducer, default: () => undefined },
   }
 })
   .addNode("agent", async (state: AgentState) => {
@@ -79,8 +64,9 @@ const workflow = new StateGraph<AgentState>({
         loanEstimate: state.loanEstimate,
         report: state.report,
       };
-    } catch (error: any) {
-      console.error("❌ Agent error:", error.message);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? (error as Error).message : String(error);
+      console.error("❌ Agent error:", msg);
       return { 
         messages: state.messages,
         nftData: state.nftData,
@@ -103,7 +89,7 @@ const workflow = new StateGraph<AgentState>({
     
     for (const toolCall of toolCalls) {
       console.error(`  - Calling: ${toolCall.name}`);
-      let result: string;
+      let result: string = "";
       
       try {
         switch (toolCall.name) {
@@ -122,8 +108,8 @@ const workflow = new StateGraph<AgentState>({
                 args.floorPrice = nft.floorPrice || 0.1;
                 args.collectionName = nft.collectionName || "Unknown";
                 console.error(`   📋 Using traits from NFT data: ${nft.traits?.length || 0} traits`);
-              } catch (e: any) {
-                console.error("Error parsing nftData:", e.message);
+              } catch (e: unknown) {
+                console.error("Error parsing nftData:", e instanceof Error ? e.message : String(e));
               }
             }
             result = await rarityAnalysisTool.invoke(args);
@@ -141,8 +127,8 @@ const workflow = new StateGraph<AgentState>({
                 args.floorPrice = nft.floorPrice || 0.1;
                 args.rarityPremium = rarity.estimatedPremium || 0;
                 console.error(`   💰 Using floor price: ${args.floorPrice} ETH, premium: ${args.rarityPremium}%`);
-              } catch (e: any) {
-                console.error("Error parsing data for LTV:", e.message);
+              } catch (e: unknown) {
+                console.error("Error parsing data for LTV:", e instanceof Error ? e.message : String(e));
               }
             }
             result = await ltvCalculatorTool.invoke(args);
@@ -224,10 +210,11 @@ const workflow = new StateGraph<AgentState>({
           default:
             result = `Tool ${toolCall.name} not implemented`;
         }
-      } catch (error: any) {
-        console.error(`❌ Error executing tool ${toolCall.name}:`, error.message);
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? (error as Error).message : String(error);
+        console.error(`❌ Error executing tool ${toolCall.name}:`, msg);
         result = JSON.stringify({ 
-          error: `Tool execution failed: ${error.message}`,
+          error: `Tool execution failed: ${msg}`,
           toolName: toolCall.name 
         });
       }
@@ -302,8 +289,8 @@ User query: "${userQuery}"`
         const reportData = JSON.parse(result.report);
         console.error(`   - Report summary: ${reportData.summary || "N/A"}`);
         return reportData.report || "Report generated but content missing";
-      } catch (e: any) {
-        console.error("Error parsing final report:", e.message);
+      } catch (e: unknown) {
+        console.error("Error parsing final report:", e instanceof Error ? e.message : String(e));
         return result.report || "Report generated but could not be parsed";
       }
     }
@@ -316,8 +303,9 @@ User query: "${userQuery}"`
     
     return "No report could be generated. Please check the NFT data and try again.";
     
-  } catch (error: any) {
-    console.error("❌ Workflow error:", error.message);
-    return `Error generating loan assessment: ${error.message}`;
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? (error as Error).message : String(error);
+    console.error("❌ Workflow error:", msg);
+    return `Error generating loan assessment: ${msg}`;
   }
 }

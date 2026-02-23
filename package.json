@@ -11,17 +11,7 @@
     "clean": "rimraf dist",
     "watch": "nodemon --exec ts-node src/index.ts"
   },
-  "keywords": [
-    "nft",
-    "lending",
-    "defi",
-    "relay",
-    "chainlink",
-    "twap",
-    "benddao",
-    "jpegd",
-    "blend"
-  ],
+  "keywords": ["nft", "lending", "defi", "relay", "chainlink", "twap", "benddao", "jpegd", "blend"],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -35,7 +25,8 @@
     "ethers": "^5.7.2",
     "express": "^5.2.1",
     "moralis": "^2.27.2",
-    "node-cache": "^5.1.2"
+    "node-cache": "^5.1.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

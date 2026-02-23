@@ -71,8 +71,9 @@ async function main() {
           console.log("\n" + "═".repeat(80) + "\n");
           console.log(report);
           console.log("\n" + "═".repeat(80) + "\n");
-        } catch (error: any) {
-          console.error("\n❌ Error:", error.message);
+        } catch (error: unknown) {
+          const msg = error instanceof Error ? error.message : String(error);
+          console.error("\n❌ Error:", msg);
         }
         
         main();
